@@ -1,269 +1,124 @@
-# Miranda_TaskManager
+# Taskify
 
-A full-stack Task Manager web application built with **Django REST Framework** and **React.js**.
+Taskify is a responsive full-stack task management dashboard built with React and Django REST Framework. It combines task CRUD operations with status tracking, productivity metrics, filtering, themes, and detailed activity history.
 
-The application allows users to:
+## Features
 
-- View all tasks
-- Create a new task
-- Edit an existing task
-- Mark a task as completed or pending
-- Delete a task
-- Record task activity through an audit log
+- Create, view, edit, and delete tasks
+- Animated Pending and Completed status transfers
+- Completion congratulation animation
+- Total, pending, completed, and completion-rate KPIs
+- Live local date and time
+- Search, status, and inclusive creation-date filters
+- Persistent grid/list layouts and light/dark themes
+- Responsive desktop and mobile interface
+- Date-grouped Recent Activities timeline
+- Audit logs for create, update, status, and delete actions
+- Old and new title/description values shown for updates
+- Custom Taskify SVG branding and favicon
 
-## Tech Stack
+## Technology
 
-### Backend
-- Python
-- Django
-- Django REST Framework
-- SQLite
-- django-cors-headers
-
-### Frontend
-- React.js
-- Vite
-- JavaScript
-- Native Fetch API
-- ESLint
+| Frontend | Backend |
+|---|---|
+| React 19, Vite 8 | Python, Django 6 |
+| JavaScript and JSX | Django REST Framework |
+| Native Fetch API | django-cors-headers |
+| Responsive CSS and animations | SQLite |
+| Oxlint | |
 
 ## Project Structure
 
 ```text
 Miranda_TaskManager/
-├── backend/
-│   ├── config/
-│   ├── tasks/
-│   ├── manage.py
-│   └── requirements.txt
-├── frontend/
-│   ├── public/
-│   ├── src/
-│   ├── package.json
-│   └── vite.config.js
-├── .gitignore
-└── README.md
+|-- backend/       # Django API, task app, and migrations
+|-- frontend/      # React application and public assets
+|-- .gitignore
+`-- README.md
 ```
 
-## Backend Setup
+## Run Locally
 
-### 1. Navigate to the backend
+### Backend
 
 ```bash
 cd backend
-```
-
-### 2. Create a virtual environment
-
-#### Windows
-
-```bash
 python -m venv venv
-venv\Scripts\activate
 ```
 
-#### macOS / Linux
-
-```bash
-python3 -m venv venv
-source venv/bin/activate
-```
-
-### 3. Install dependencies
+Activate with `venv\Scripts\activate` on Windows or `source venv/bin/activate` on macOS/Linux.
 
 ```bash
 pip install -r requirements.txt
-```
-
-### 4. Apply migrations
-
-```bash
 python manage.py migrate
-```
-
-### 5. Run the Django server
-
-```bash
 python manage.py runserver
 ```
 
-The backend will normally be available at:
+The API runs at `http://127.0.0.1:8000/`.
 
-```text
-http://127.0.0.1:8000/
-```
+### Frontend
 
-Task API:
-
-```text
-http://127.0.0.1:8000/tasks/
-```
-
-## Frontend Setup
-
-Open a second terminal.
-
-### 1. Navigate to the frontend
+In a second terminal:
 
 ```bash
 cd frontend
-```
-
-### 2. Install dependencies
-
-```bash
 npm install
-```
-
-### 3. Start the Vite development server
-
-```bash
 npm run dev
 ```
 
-The frontend will normally be available at:
+Open `http://localhost:5173/`. Both servers must be running.
 
-```text
-http://localhost:5173/
-```
+## Data
 
-## Task Model
+A task contains `id`, `title`, `description`, `completed`, and `created_at` fields.
 
-Each task contains:
+Each TaskLog stores the affected task, action, timestamp, and old/new data snapshots. Supported actions are `CREATE`, `UPDATE`, `STATUS_UPDATE`, and `DELETE`. Update records retain old and new title and description values.
 
-| Field | Description |
-|---|---|
-| `id` | Unique task identifier |
-| `title` | Task title |
-| `description` | Optional task description |
-| `completed` | Completed or pending status |
-| `created_at` | Date and time the task was created |
+## API
 
-## API Endpoints
-
-The backend uses Django REST Framework `viewsets.ViewSet`.
+### Tasks
 
 | Method | Endpoint | Description |
 |---|---|---|
-| `GET` | `/tasks/` | List all tasks |
-| `POST` | `/tasks/` | Create a new task |
+| `GET` | `/tasks/` | List tasks, newest first |
+| `POST` | `/tasks/` | Create a task |
 | `GET` | `/tasks/{id}/` | Retrieve a task |
 | `PUT` | `/tasks/{id}/` | Update title and description |
 | `PATCH` | `/tasks/{id}/` | Toggle completed status |
 | `DELETE` | `/tasks/{id}/` | Delete a task |
 
-## Example Create Request
+### Activity Logs
 
-```http
-POST /tasks/
-Content-Type: application/json
-```
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/logs/` | List logs, newest first |
+| `GET` | `/logs/{id}/` | Retrieve a log |
 
-```json
-{
-  "title": "Complete assessment",
-  "description": "Finish the Task Manager application"
-}
-```
+The logs API is read-only.
 
-## Example Update Request
+Toggle a task status with `PATCH /tasks/{id}/` and an empty JSON body.
 
-```http
-PUT /tasks/1/
-Content-Type: application/json
-```
+## Filtering and Preferences
 
-```json
-{
-  "title": "Updated task",
-  "description": "Updated description"
-}
-```
+Search, status, and date filters work together. Creation timestamps are converted to the user's local calendar date before filtering, keeping displayed dates and results consistent across timezones. Theme and layout preferences are stored in browser local storage.
 
-## Toggle Task Status
-
-```http
-PATCH /tasks/1/
-Content-Type: application/json
-```
-
-```json
-{}
-```
-
-The PATCH endpoint toggles the current `completed` value.
-
-## Audit Log
-
-An additional audit log feature records task changes.
-
-Recorded actions include:
-
-- `CREATE`
-- `UPDATE`
-- `STATUS_UPDATE`
-- `DELETE`
-
-The audit log stores the task ID, task title, action type, previous data, updated data, and timestamp.
-
-## CORS
-
-The frontend and backend run on different development origins.
-
-Typical development origins:
-
-```text
-Frontend: http://localhost:5173
-Backend:  http://127.0.0.1:8000
-```
-
-The backend uses `django-cors-headers` so the React frontend can communicate with Django during development.
-
-## Testing
-
-Verify the following from the React UI:
-
-1. Create a task.
-2. Confirm it appears in the task list.
-3. Edit the task title and description.
-4. Toggle the task between pending and completed.
-5. Delete the task.
-6. Verify loading and error states.
-7. Confirm audit log entries are created for task changes.
-
-## Notes and Assumptions
-
-- SQLite is used as the database.
-- Django REST Framework uses `viewsets.ViewSet`, not `ModelViewSet`.
-- PUT updates the task title and description.
-- PATCH toggles the completed status only.
-- Task descriptions are optional.
-- New tasks default to `completed = false`.
-- Authentication is outside the scope of this project.
-- Audit logging is an additional feature beyond the core Task Manager requirements.
-
-## Running the Complete Application
-
-Use two terminals.
-
-### Terminal 1 — Backend
-
-```bash
-cd backend
-venv\Scripts\activate
-python manage.py runserver
-```
-
-### Terminal 2 — Frontend
+## Validation
 
 ```bash
 cd frontend
-npm install
-npm run dev
+npm run lint
+npm run build
 ```
 
-Then open:
-
-```text
-http://localhost:5173/
+```bash
+cd backend
+python manage.py check
+python manage.py test
 ```
+
+## Development Notes
+
+- The React client currently uses `http://127.0.0.1:8000/`.
+- SQLite is for local development and is excluded from Git.
+- Authentication and multi-user ownership are outside the current scope.
+- Move `SECRET_KEY`, `DEBUG`, allowed hosts, and other environment-specific settings to environment variables before production deployment.
