@@ -6,11 +6,16 @@ from .models import Task, TaskLog
 from .serializers import TaskSerializer, TaskLogSerializer
 
 
-class TaskLogViewSet(viewsets.ReadOnlyModelViewSet):
-    serializer_class = TaskLogSerializer
+class TaskLogViewSet(viewsets.ViewSet):
+    def list(self, request):
+        logs = TaskLog.objects.all().order_by('-created_at')
+        serializer = TaskLogSerializer(logs, many=True)
+        return Response(serializer.data)
 
-    def get_queryset(self):
-        return TaskLog.objects.all().order_by('-created_at')
+    def retrieve(self, request, pk=None):
+        log = get_object_or_404(TaskLog, pk=pk)
+        serializer = TaskLogSerializer(log)
+        return Response(serializer.data)
 
 class TaskViewSet(viewsets.ViewSet):
     # list all tasks
@@ -38,6 +43,11 @@ class TaskViewSet(viewsets.ViewSet):
                 serializer.data,
                 status=status.HTTP_201_CREATED
             )
+
+        return Response(
+            serializer.errors,
+            status=status.HTTP_400_BAD_REQUEST
+        )
         
     # get task by id 
     def retrieve(self, request, pk=None):
@@ -75,7 +85,7 @@ class TaskViewSet(viewsets.ViewSet):
             return Response(serializer.data)
         
         return Response(
-            serializer.error,
+            serializer.errors,
             status = status.HTTP_400_BAD_REQUEST
         )
         
