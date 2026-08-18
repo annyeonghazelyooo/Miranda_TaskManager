@@ -17,6 +17,24 @@ Taskify is a responsive full-stack task management dashboard built with React an
 - Old and new title/description values shown for updates
 - Custom Taskify SVG branding and favicon
 
+## Screenshots
+
+### Dashboard Themes
+
+| Light mode | Dark mode |
+|---|---|
+| ![Taskify dashboard in light mode](docs/screenshots/dashboard-light.png) | ![Taskify dashboard in dark mode](docs/screenshots/dashboard-dark.png) |
+
+The dashboard provides live productivity KPIs, task status columns, search and date filters, layout controls, and theme switching.
+
+### Task Creation and Activity History
+
+| Create a task | Recent activities |
+|---|---|
+| ![Taskify create-task form](docs/screenshots/create-task.png) | ![Taskify recent-activities timeline](docs/screenshots/recent-activities.png) |
+
+Taskify uses a focused creation form and records task changes in a date-grouped audit timeline, including old and new values for updates.
+
 ## Technology
 
 | Frontend | Backend |
