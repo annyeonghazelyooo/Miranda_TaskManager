@@ -27,6 +27,35 @@ Taskify is a responsive full-stack task management dashboard built with React an
 | Responsive CSS and animations | SQLite |
 | Oxlint | |
 
+## Prerequisites
+
+Install these tools before setting up the project:
+
+- **Python 3.12 or newer** — https://www.python.org/downloads/
+- **pip** — included with current Python installers
+- **Node.js 20.19+ or 22.12+** — https://nodejs.org/
+- **npm** — included with Node.js
+- **Git** — https://git-scm.com/downloads
+
+On Windows, enable **Add Python to PATH** in the Python installer. Close and reopen the terminal after installing the tools.
+
+Confirm the installations:
+
+```bash
+python --version
+pip --version
+node --version
+npm --version
+git --version
+```
+
+If `python` is not recognized on Windows, use the Python launcher:
+
+```powershell
+py --version
+py -m pip --version
+```
+
 ## Project Structure
 
 ```text
@@ -45,6 +74,8 @@ Miranda_TaskManager/
 cd backend
 python -m venv venv
 ```
+
+Windows users can alternatively create the environment with `py -m venv venv`.
 
 Activate with `venv\Scripts\activate` on Windows or `source venv/bin/activate` on macOS/Linux.
 
